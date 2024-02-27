@@ -69,31 +69,44 @@ function Header() {
 
 function Menu() {
   const pizzas = pizzaData;
+  // const pizzas = [];
   const numPizzas = pizzas.length;
 
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      {numPizzas > 0 && (
-        <ul className="pizzas">
-          {pizzaData.map((pizza) => (
-            <Pizza pizzaObj={pizza} key={pizza.name} />
-          ))}
-        </ul>
+      {/* using ternaries operator */}
+      {numPizzas > 0 ? (
+        // here we use react fragment
+        <>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from! All
+            made with fresh ingredients and all organic.
+          </p>
+          <ul className="pizzas">
+            {pizzaData.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're out of pizza for now...</p>
       )}
     </main>
   );
 }
 
-function Pizza(props) {
-  console.log(props);
+function Pizza({ pizzaObj }) {
+  console.log(pizzaObj);
+
+  if (pizzaObj.soldOut) return null;
   return (
     <li className="pizza">
-      <img src={props.pizzaObj.photoName} alt={props.pizzaObj.name} />
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
-        <h3>{props.pizzaObj.name}</h3>
-        <p>{props.pizzaObj.ingredients}</p>
-        <span>{props.pizzaObj.price + 3}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <span>{pizzaObj.price + 3}</span>
       </div>
     </li>
   );
@@ -107,15 +120,22 @@ function Footer() {
 
   // if (hour >= openHour && hour <= closeHour) alert("We're currently open!");
   // else alert("Sorry we're closed");
+  // if (!isOpen)
+  //   return (
+  //     <p>
+  //       We're happy to welcome you between {openHour}:00 and {closeHour}:00
+  //     </p>
+  //   );
 
   return (
     <footer className="footer">
       {/* {new Date().toLocaleTimeString()}. We're currently open */}
-      {isOpen && (
-        <div className="order">
-          <p>We're Open until {closeHour}:00. Come visit or order online !</p>
-          <button className="btn">Order</button>
-        </div>
+      {isOpen ? (
+        <Order closeHourHour={closeHour} openHour={openHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00
+        </p>
       )}
     </footer>
   );
@@ -123,6 +143,17 @@ function Footer() {
   // return React.createElement("footer", null, "We're currently open!");
 }
 
+function Order({ closeHour, openHour }) {
+  return (
+    <div className="order">
+      <p>
+        We're Open from {openHour}:00 until {closeHour}:00. Come visit or order
+        online !
+      </p>
+      <button className="btn">Order</button>
+    </div>
+  );
+}
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
